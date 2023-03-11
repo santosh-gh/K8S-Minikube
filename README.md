@@ -13,3 +13,4 @@ minikube delete --all
 
 minikube start
 
+kubectl exec -it postgres-deployment-5f88678b76-kpl8b -n default -- /bin/bash
