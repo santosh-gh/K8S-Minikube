@@ -1,5 +1,6 @@
 # Deploy PostgreSQL Instance to Kubernetes
 https://sweetcode.io/how-to-deploy-postgresql-instance-to-kubernetes/
+https://adamtheautomator.com/postgres-to-kubernetes/
 
 
 
