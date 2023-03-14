@@ -1,0 +1,158 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysqlapi-deployment
+spec:
+  selector:
+    matchLabels:
+      app: mysqlapi-pod
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: mysqlapi-pod
+    spec:
+      containers:
+        - name: mysqlapi-container
+          image: mysqlapi:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:80             
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+    name: mysqlapi-service
+spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+        app: mysqlapi-pod
+    type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: mysqlapi-ingress
+spec:
+    rules:
+    - http:
+        paths:
+        - path: /mysqlapi
+          pathType: Prefix
+          backend:
+            service:
+              name: mysqlapi-service
+              port:
+                number: 80
+---    
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodbapi-deployment
+spec:
+  selector:
+    matchLabels:
+      app: mongodbapi-pod
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: mongodbapi-pod
+    spec:
+      containers:
+        - name: mongodbapi-container
+          image: mongodbapi:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:80             
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+    name: mongodbapi-service
+spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+        app: mongodbapi-pod
+    type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: mongodbapi-ingress
+spec:
+    rules:
+    - http:
+        paths:
+        - path: /mongodbapi
+          pathType: Prefix
+          backend:
+            service:
+              name: mongodbapi-service
+              port:
+                number: 80
+---               
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demoapp-deployment
+spec:
+  selector:
+    matchLabels:
+      app: demoapp-pod
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: demoapp-pod
+    spec:
+      containers:
+        - name: demoapp-container
+          image: demoapp:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP           
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+    name: demoapp-service
+spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+        app: demoapp-pod
+    type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: demo-ingress
+spec:
+    rules:
+    - http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: demoapp-service
+              port:
+                number: 80
